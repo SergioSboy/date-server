@@ -3,7 +3,18 @@ services:
   flask_app:
     build: .
     ports:
-      - "81:5000"
+      - "5000:5000"  # оставляем 5000 порт для внутреннего использования
     environment:
       - FLASK_ENV=production
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "81:80"  # слушаем 81 порт на хосте
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # подключаем конфигурацию Nginx
+      - ../date:/usr/share/nginx/html  # указываем путь к директории с HTML страницами
+    depends_on:
+      - flask_app
     restart: always
